@@ -31,7 +31,8 @@ void main() {
       initialState: 0,
       child: child,
     );
-    expect(objectUnderTest, isA<StatefulInheritedValueWidget<Store<int>>>());
+    expect(objectUnderTest,
+        isA<StatefulInheritedValueWidget<Store<int>>>());
     final provider =
         objectUnderTest as StatefulInheritedValueWidget<Store<int>>;
     expect(provider.child, child);
@@ -42,9 +43,9 @@ void main() {
   test('wrapWithConsumer', () {
     const child = SizedBox();
     final objectUnderTest = wrapWithConsumer<int, int>(
-      builder: AsyncSnapshotBuilder.reduced(
+      builder: AsyncSnapshotBuilder<int>.reduced(
         0,
-        (context, data) => child,
+        ({Key? key, required int props}) => child,
       ),
       transformer: (reducible) => 1,
     );
