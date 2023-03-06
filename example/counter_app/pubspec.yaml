@@ -1,0 +1,21 @@
+name: counter_app
+description: Counter demo app implemented with 'reduced' API and 'reduced_streambuilder' implementation as an example of how to use the 'reduced_streambuilder' package.
+publish_to: 'none' 
+version: 0.1.0+1
+
+environment:
+  sdk: '>=2.19.3 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  reduced: ^0.1.0
+  reduced_streambuilder: 
+    git: 
+      url: https://github.com/partmaster/reduced_streambuilder.git
+      ref: 5a2ea50
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0

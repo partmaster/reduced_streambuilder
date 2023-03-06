@@ -139,10 +139,10 @@ class Incrementer extends Reducer<int> {
 }
 
 class Props {
-  Props({required this.counterText, required this.onPressed});
+  const Props({required this.counterText, required this.onPressed});
 
   final String counterText;
-  final Callable<void> onPressed;
+  final VoidCallable onPressed;
 }
 
 Props transformProps(Reducible<int> reducible) => Props(
@@ -158,7 +158,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('reduced_fluttercommand example'),
+          title: const Text('reduced_streambuilder example'),
         ),
         body: Center(
           child: Column(
@@ -186,7 +186,7 @@ Finished counter demo app using logic.dart and 'reduced_streambuilder' package:
 // main.dart
 
 import 'package:flutter/material.dart';
-import 'package:reduced_setstate/reduced_setstate.dart';
+import 'package:reduced_streambuilder/reduced_streambuilder.dart';
 
 import 'logic.dart';
 
@@ -196,14 +196,17 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => wrapWithProvider1(
-        transformer1: transformProps,
+  Widget build(BuildContext context) => wrapWithProvider(
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
           home: Builder(
             builder: (context) => wrapWithConsumer(
-              builder: MyHomePage.new,
+              transformer: transformProps,
+              builder: AsyncSnapshotBuilder<Props>.reduced(
+                transformProps(context.store()),
+                MyHomePage.new,
+              ),
             ),
           ),
         ),
