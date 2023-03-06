@@ -127,8 +127,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5a2ea50"
-      resolved-ref: "5a2ea506f0aaee8175919dbb65f384fe4cc2058b"
+      ref: main
+      resolved-ref: ff13a77fa74d1eba3aba011d16765554c3f61252
       url: "https://github.com/partmaster/reduced_streambuilder.git"
     source: git
     version: "0.1.0"
