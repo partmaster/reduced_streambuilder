@@ -18,10 +18,7 @@ class MyApp extends StatelessWidget {
           home: Builder(
             builder: (context) => wrapWithConsumer(
               transformer: transformProps,
-              builder: AsyncSnapshotBuilder<Props>.reduced(
-                transformProps(context.store()),
-                MyHomePage.new,
-              ),
+              builder: MyHomePage.new,
             ),
           ),
         ),

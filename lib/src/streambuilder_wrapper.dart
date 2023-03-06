@@ -106,12 +106,15 @@ Widget _wrapWithProvider<S>({
     );
 
 Widget wrapWithConsumer<S, P extends Object>({
-  required AsyncSnapshotBuilder<P> builder,
+  required ReducedWidgetBuilder<P> builder,
   required ReducedTransformer<S, P> transformer,
 }) =>
     Builder(
       builder: (context) => _wrapWithConsumer(
-        builder: builder,
+        builder: AsyncSnapshotBuilder.reduced(
+          transformer(context.store()),
+          builder,
+        ),
         transformer: transformer,
         store: context.store<S>(),
       ),

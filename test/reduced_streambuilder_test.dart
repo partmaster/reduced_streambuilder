@@ -42,10 +42,7 @@ void main() {
   test('wrapWithConsumer', () {
     const child = SizedBox();
     final objectUnderTest = wrapWithConsumer<int, int>(
-      builder: AsyncSnapshotBuilder<int>.reduced(
-        0,
-        ({Key? key, required int props}) => child,
-      ),
+      builder: ({Key? key, required int props}) => child,
       transformer: (reducible) => 1,
     );
     expect(objectUnderTest, isA<Builder>());
