@@ -1,0 +1,18 @@
+name: reduced_streambuilder
+description: Implementation of the state management API 'reduced' on top of StreamController and StreamBuilder.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.19.3 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  reduced: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
