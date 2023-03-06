@@ -1,7 +1,6 @@
 // inherited_widgets.dart
 
 import 'package:flutter/widgets.dart';
-import 'package:reduced/reduced.dart';
 
 class InheritedValueWidget<V> extends InheritedWidget {
   const InheritedValueWidget({

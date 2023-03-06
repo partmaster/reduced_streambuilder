@@ -34,8 +34,7 @@ class AsyncSnapshotBuilder<P> {
     required this.done,
   }) : value = initialValue;
 
-  AsyncSnapshotBuilder.reduced(
-      P initialValue, ReducedWidgetBuilder builder)
+  AsyncSnapshotBuilder.reduced(P initialValue, ReducedWidgetBuilder<P> builder)
       : this(
           initialValue: initialValue,
           data: (_, data) => builder(props: data),
