@@ -126,11 +126,9 @@ packages:
   reduced_streambuilder:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: ff13a77fa74d1eba3aba011d16765554c3f61252
-      url: "https://github.com/partmaster/reduced_streambuilder.git"
-    source: git
+      path: "../.."
+      relative: true
+    source: path
     version: "0.1.0"
   sky_engine:
     dependency: transitive
