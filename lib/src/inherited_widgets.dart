@@ -15,12 +15,10 @@ class InheritedValueWidget<V> extends InheritedWidget {
   static U of<U>(BuildContext context) =>
       _widgetOf<InheritedValueWidget<U>>(context).value;
 
-  static W _widgetOf<W extends InheritedValueWidget>(
-      BuildContext context) {
+  static W _widgetOf<W extends InheritedValueWidget>(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<W>();
     if (result == null) {
-      throw AssertionError(
-          'InheritedValueWidget._widgetOf<$W> return null');
+      throw AssertionError('InheritedValueWidget._widgetOf<$W> return null');
     }
     return result;
   }
@@ -32,10 +30,7 @@ class InheritedValueWidget<V> extends InheritedWidget {
 
 class StatefulInheritedValueWidget<V> extends StatefulWidget {
   const StatefulInheritedValueWidget(
-      {super.key,
-      required this.value,
-      required this.child,
-      this.onDispose});
+      {super.key, required this.value, required this.child, this.onDispose});
 
   final V value;
   final Widget child;

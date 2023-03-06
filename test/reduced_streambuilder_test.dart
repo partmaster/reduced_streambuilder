@@ -31,8 +31,7 @@ void main() {
       initialState: 0,
       child: child,
     );
-    expect(objectUnderTest,
-        isA<StatefulInheritedValueWidget<Store<int>>>());
+    expect(objectUnderTest, isA<StatefulInheritedValueWidget<Store<int>>>());
     final provider =
         objectUnderTest as StatefulInheritedValueWidget<Store<int>>;
     expect(provider.child, child);
