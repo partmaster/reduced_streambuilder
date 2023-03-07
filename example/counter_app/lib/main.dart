@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => wrapWithProvider(
+  Widget build(BuildContext context) => ReducedProvider(
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
           home: Builder(
-            builder: (context) => wrapWithConsumer(
+            builder: (context) => const ReducedConsumer(
               transformer: transformProps,
               builder: MyHomePage.new,
             ),

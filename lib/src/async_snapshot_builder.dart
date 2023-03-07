@@ -1,10 +1,7 @@
-// streambuilder_wrapper.dart
+// async_snapshot_builder.dart
 
 import 'package:flutter/widgets.dart';
 import 'package:reduced/reduced.dart';
-
-import 'inherited_widgets.dart';
-import 'streambuilder_reducible.dart';
 
 typedef ErrorWidgetBuilder = Widget Function(
   BuildContext context,
@@ -28,19 +25,16 @@ typedef DoneWidgetBuilder<P> = Widget Function(
 class AsyncSnapshotBuilder<P> {
   AsyncSnapshotBuilder({
     required P initialValue,
-    required this.error,
     required this.data,
-    required this.waiting,
-    required this.done,
+    this.error,
+    this.waiting,
+    this.done,
   }) : value = initialValue;
 
   AsyncSnapshotBuilder.reduced(P initialValue, ReducedWidgetBuilder<P> builder)
       : this(
           initialValue: initialValue,
           data: (_, data) => builder(props: data),
-          error: null,
-          waiting: null,
-          done: null,
         );
 
   final ErrorWidgetBuilder? error;
@@ -85,47 +79,3 @@ class AsyncSnapshotBuilder<P> {
     }
   }
 }
-
-Widget wrapWithProvider<S>({
-  required S initialState,
-  required Widget child,
-}) =>
-    _wrapWithProvider(
-      store: Store(initialState),
-      child: child,
-    );
-
-Widget _wrapWithProvider<S>({
-  required Store<S> store,
-  required Widget child,
-}) =>
-    StatefulInheritedValueWidget(
-      value: store,
-      onDispose: store.dispose,
-      child: child,
-    );
-
-Widget wrapWithConsumer<S, P extends Object>({
-  required ReducedWidgetBuilder<P> builder,
-  required ReducedTransformer<S, P> transformer,
-}) =>
-    Builder(
-      builder: (context) => _wrapWithConsumer(
-        builder: AsyncSnapshotBuilder.reduced(
-          transformer(context.store()),
-          builder,
-        ),
-        transformer: transformer,
-        store: context.store<S>(),
-      ),
-    );
-
-Widget _wrapWithConsumer<S, P extends Object>({
-  required AsyncSnapshotBuilder<P> builder,
-  required ReducedTransformer<S, P> transformer,
-  required Store<S> store,
-}) =>
-    StreamBuilder<P>(
-      stream: store.stream.map((e) => transformer(store)).distinct(),
-      builder: builder,
-    );

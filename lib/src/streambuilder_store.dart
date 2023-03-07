@@ -1,4 +1,4 @@
-// streambuilder_reducible.dart
+// streambuilder_store.dart
 
 import 'dart:async';
 
@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart' show BuildContext;
 import 'package:reduced/reduced.dart';
 import 'package:reduced_streambuilder/src/inherited_widgets.dart';
 
-class Store<S> implements Reducible<S> {
+class Store<S> implements ReducedStore<S> {
   Store(S initialState)
       : this._(
           initialState,
