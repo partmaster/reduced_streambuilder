@@ -43,9 +43,6 @@ class ReducedConsumer<S, P> extends StatelessWidget {
         builder: AsyncSnapshotBuilder(
           initialValue: transformer(store),
           data: (_, data) => builder(props: data),
-          error: null,
-          waiting: null,
-          done: null,
         ),
       );
 }

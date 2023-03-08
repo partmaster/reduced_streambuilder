@@ -2,16 +2,16 @@
 
 Implementation of the 'reduced' API with StreamController and StreamBuilder with following features:
 
-1. Implementation of the ```Reducible``` interface 
+1. Implementation of the ```ReducedStore``` interface 
 2. Register a state for management.
 3. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```Reducible``` interface 
+#### 1. Implementation of the ```ReducedStore``` interface 
 
 ```dart
-class Store<S> implements Reducible<S> {
+class Store<S> implements ReducedStore<S> {
   Store(S initialState)
       : this._(
           initialState,
@@ -52,63 +52,61 @@ extension StoreOnBuildContext on BuildContext {
 #### 2. Register a state for management.
 
 ```dart
-Widget wrapWithProvider<S>({
-  required S initialState,
-  required Widget child,
-}) =>
-    _wrapWithProvider(
-      store: Store(initialState),
-      child: child,
-    );
-```
+class ReducedProvider<S> extends StatelessWidget {
+  ReducedProvider({
+    super.key,
+    required S initialState,
+    required this.child,
+  }) : store = Store(initialState);
 
-```dart
-Widget _wrapWithProvider<S>({
-  required Store<S> store,
-  required Widget child,
-}) =>
-    StatefulInheritedValueWidget(
-      value: store,
-      onDispose: store.dispose,
-      child: child,
-    );
+  final Store<S> store;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => StatefulInheritedValueWidget(
+        value: store,
+        onDispose: store.dispose,
+        child: child,
+      );
+}
 ```
 
 #### 3. Trigger a rebuild on widgets selectively after a state change.
 
+
 ```dart
-Widget wrapWithConsumer<S, P extends Object>({
-  required AsyncSnapshotBuilder<P> builder,
-  required ReducedTransformer<S, P> transformer,
-}) =>
-    Builder(
-      builder: (context) => _wrapWithConsumer(
-        builder: builder,
-        transformer: transformer,
-        store: context.store<S>(),
-      ),
-    );
-```
-```dart
-Widget _wrapWithConsumer<S, P extends Object>({
-  required AsyncSnapshotBuilder<P> builder,
-  required ReducedTransformer<S, P> transformer,
-  required Store<S> store,
-}) =>
-    StreamBuilder<P>(
-      stream: store.stream.map((e) => transformer(store)).distinct(),
-      builder: builder,
-    );
+class ReducedConsumer<S, P> extends StatelessWidget {
+  const ReducedConsumer({
+    super.key,
+    required this.builder,
+    required this.transformer,
+  });
+
+  final ReducedWidgetBuilder<P> builder;
+  final ReducedTransformer<S, P> transformer;
+
+  @override
+  Widget build(BuildContext context) => _build(context.store<S>());
+
+  Widget _build(Store<S> store) => StreamBuilder<P>(
+        stream:
+            store.stream.map((e) => transformer(store)).distinct(),
+        builder: AsyncSnapshotBuilder(
+          initialValue: transformer(store),
+          data: (_, data) => builder(props: data),
+        ),
+      );
+}
 ```
 
 ## Getting started
 
-In the pubspec.yaml add dependencies on the package 'reduced' and on the package  'reduced_streambuilder'.
+In the pubspec.yaml add dependencies on the package 'reduced' and on the package 'reduced_streambuilder'.
 
 ```
 dependencies:
-  reduced: ^0.1.0
-  reduced_streambuilder: ^0.1.0
+  reduced: 0.2.1
+  reduced_streambuilder: 0.2.1
 ```
 
 Import package 'reduced' to implement the logic.
@@ -145,7 +143,7 @@ class Props {
   final VoidCallable onPressed;
 }
 
-Props transformProps(Reducible<int> reducible) => Props(
+Props transformProps(ReducedStore<int> reducible) => Props(
       counterText: '${reducible.state}',
       onPressed: CallableAdapter(reducible, Incrementer()),
     );
@@ -196,18 +194,13 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => wrapWithProvider(
+  Widget build(BuildContext context) => ReducedProvider(
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: Builder(
-            builder: (context) => wrapWithConsumer(
-              transformer: transformProps,
-              builder: AsyncSnapshotBuilder<Props>.reduced(
-                transformProps(context.store()),
-                MyHomePage.new,
-              ),
-            ),
+          home: const ReducedConsumer(
+            transformer: transformProps,
+            builder: MyHomePage.new,
           ),
         ),
       );

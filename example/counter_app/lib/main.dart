@@ -15,11 +15,9 @@ class MyApp extends StatelessWidget {
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: Builder(
-            builder: (context) => const ReducedConsumer(
-              transformer: transformProps,
-              builder: MyHomePage.new,
-            ),
+          home: const ReducedConsumer(
+            transformer: transformProps,
+            builder: MyHomePage.new,
           ),
         ),
       );
