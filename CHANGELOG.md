@@ -4,4 +4,4 @@
 
 ## 0.2.2 
 
-* skip first rebuild in ReducedConsumer if unnessecary 
+* skip first rebuild in ReducedConsumer if unnecessary. 
