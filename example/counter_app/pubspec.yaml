@@ -12,9 +12,6 @@ dependencies:
   reduced: 0.2.1
   reduced_streambuilder: 
     path: ../../
-#    git: 
-#      url: https://github.com/partmaster/reduced_streambuilder.git
-#      ref: main
 
 dev_dependencies:
   flutter_test:

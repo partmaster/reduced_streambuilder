@@ -88,14 +88,35 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => _build(context.store<S>());
 
-  Widget _build(Store<S> store) => StreamBuilder<P>(
-        stream:
-            store.stream.map((e) => transformer(store)).distinct(),
-        builder: AsyncSnapshotBuilder(
-          initialValue: transformer(store),
-          data: (_, data) => builder(props: data),
+  Widget _build(Store<S> store) => __build(store, transformer(store));
+
+  Widget __build(Store<S> store, P initialValue) => StreamBuilder<P>(
+        stream: _skipInitialValue(
+          store.stream.map((e) => transformer(store)),
+          initialValue,
+        ).distinct(),
+        builder: AsyncSnapshotBuilder.reduced(
+          initialValue: initialValue,
+          builder: builder,
         ),
       );
+}
+```
+
+```dart
+Stream<T> _skipInitialValue<T>(
+  Stream<T> stream,
+  T initialValue,
+) async* {
+  await for (final value in stream) {
+    if (value != initialValue) {
+      yield value;
+      break;
+    }
+  }
+  await for (final value in stream) {
+    yield value;
+  }
 }
 ```
 
