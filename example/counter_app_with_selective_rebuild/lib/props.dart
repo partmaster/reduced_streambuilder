@@ -38,8 +38,7 @@ class MyCounterWidgetProps {
 
   @override
   operator ==(other) =>
-      other is MyCounterWidgetProps &&
-      counterText == other.counterText;
+      other is MyCounterWidgetProps && counterText == other.counterText;
 
   @override
   String toString() {

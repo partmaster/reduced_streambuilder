@@ -9,8 +9,7 @@ extension SingleWidgetByType on CommonFinders {
 }
 
 void main() {
-  testWidgets('Counter increments smoke test',
-      (WidgetTester tester) async {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
