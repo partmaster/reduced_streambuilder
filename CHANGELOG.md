@@ -5,3 +5,7 @@
 ## 0.2.2 
 
 * skip first rebuild in ReducedConsumer if unnecessary. 
+
+## 0.3.0
+
+* use reduced 0.3.0 from github

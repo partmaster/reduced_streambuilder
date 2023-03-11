@@ -25,8 +25,8 @@ class Store<S> implements ReducedStore<S> {
   final Stream<S> stream;
 
   @override
-  reduce(Reducer<S> reducer) {
-    _state = reducer(_state);
+  dispatch(Event<S> event) {
+    _state = event(_state);
     _controller.sink.add(_state);
   }
 

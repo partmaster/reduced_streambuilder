@@ -1,9 +1,8 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reduced/reduced.dart';
 import 'package:reduced_streambuilder/reduced_streambuilder.dart';
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
@@ -21,7 +20,7 @@ void main() {
 
   test('Store reduce', () async {
     final objectUnderTest = Store(0);
-    objectUnderTest.reduce(Incrementer());
+    objectUnderTest.dispatch(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }
