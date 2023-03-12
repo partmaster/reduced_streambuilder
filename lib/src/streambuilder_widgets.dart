@@ -11,8 +11,9 @@ class ReducedProvider<S> extends StatelessWidget {
   ReducedProvider({
     super.key,
     required S initialState,
+    EventListener? onEventDispatched,
     required this.child,
-  }) : store = Store(initialState);
+  }) : store = Store(initialState, onEventDispatched);
 
   final Store<S> store;
   final Widget child;

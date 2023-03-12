@@ -12,26 +12,32 @@ Implementation of the 'reduced' API with StreamController and StreamBuilder with
 
 ```dart
 class Store<S> implements ReducedStore<S> {
-  Store(S initialState)
+  Store(S initialState, [EventListener<S>? onEventDispatched])
       : this._(
           initialState,
+          onEventDispatched,
           StreamController<S>.broadcast(),
         );
 
   Store._(
     S initialState,
+    EventListener<S>? onEventDispatched,
     StreamController<S> controller,
   )   : _state = initialState,
+        _onEventDispatched = onEventDispatched,
         _controller = controller..add(initialState),
         stream = controller.stream.distinct();
 
   S _state;
+  bool _inOnEventDispatched;
   final StreamController<S> _controller;
   final Stream<S> stream;
+  final EventListener<S>? _onEventDispatched;
 
   @override
-  reduce(Reducer<S> reducer) {
-    _state = reducer(_state);
+  dispatch(Event<S> event) {
+    _state = event(_state);
+    _onEventDispatched?.call(this, event);
     _controller.sink.add(_state);
   }
 
@@ -56,8 +62,9 @@ class ReducedProvider<S> extends StatelessWidget {
   ReducedProvider({
     super.key,
     required S initialState,
+    EventListener? onEventDispatched,
     required this.child,
-  }) : store = Store(initialState);
+  }) : store = Store(initialState, onEventDispatched);
 
   final Store<S> store;
   final Widget child;

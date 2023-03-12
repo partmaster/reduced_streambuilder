@@ -1,6 +1,6 @@
 name: reduced_streambuilder
 description: Implementation of the state management API 'reduced' on top of StreamController and StreamBuilder.
-version: 0.3.2
+version: 0.3.3
 homepage: https://github.com/partmaster/reduced_streambuilder
 repository: https://github.com/partmaster/reduced_streambuilder.git
 publish_to: none
