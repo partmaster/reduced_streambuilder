@@ -8,19 +8,19 @@ class CounterIncremented extends Event<int> {
 }
 
 void main() {
-  test('Store state 0', () {
-    final objectUnderTest = Store(0);
+  test('ReducedStore state 0', () {
+    final objectUnderTest = ReducedStore(0);
     expect(objectUnderTest.state, 0);
   });
 
-  test('Store state 1', () {
-    final objectUnderTest = Store(1);
+  test('ReducedStore state 1', () {
+    final objectUnderTest = ReducedStore(1);
     expect(objectUnderTest.state, 1);
   });
 
-  test('Store reduce', () async {
-    final objectUnderTest = Store(0);
-    objectUnderTest.dispatch(CounterIncremented());
+  test('ReducedStore process', () async {
+    final objectUnderTest = ReducedStore(0);
+    objectUnderTest.process(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }

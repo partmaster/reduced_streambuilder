@@ -2,24 +2,24 @@
 
 Implementation of the 'reduced' API with StreamController and StreamBuilder with following features:
 
-1. Implementation of the ```ReducedStore``` interface 
+1. Implementation of the ```Store``` interface 
 2. Register a state for management.
 3. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```ReducedStore``` interface 
+#### 1. Implementation of the ```Store``` interface 
 
 ```dart
-class Store<S> implements ReducedStore<S> {
-  Store(S initialState, [EventListener<S>? onEventDispatched])
+class ReducedStore<S> implements Store<S> {
+  ReducedStore(S initialState, [EventListener<S>? onEventDispatched])
       : this._(
           initialState,
           onEventDispatched,
           StreamController<S>.broadcast(),
         );
 
-  Store._(
+  ReducedStore._(
     S initialState,
     EventListener<S>? onEventDispatched,
     StreamController<S> controller,
@@ -29,15 +29,14 @@ class Store<S> implements ReducedStore<S> {
         stream = controller.stream.distinct();
 
   S _state;
-  bool _inOnEventDispatched;
   final StreamController<S> _controller;
   final Stream<S> stream;
   final EventListener<S>? _onEventDispatched;
 
   @override
-  dispatch(Event<S> event) {
+  process(Event<S> event) {
     _state = event(_state);
-    _onEventDispatched?.call(this, event);
+    _onEventDispatched?.call(this, event, UniqueKey());
     _controller.sink.add(_state);
   }
 
@@ -50,7 +49,8 @@ class Store<S> implements ReducedStore<S> {
 
 ```dart
 extension StoreOnBuildContext on BuildContext {
-  Store<S> store<S>() => InheritedValueWidget.of<Store<S>>(this);
+  ReducedStore<S> store<S>() =>
+      InheritedValueWidget.of<ReducedStore<S>>(this);
   Stream<S> stream<S>() => store<S>().stream;
 }
 ```
@@ -64,9 +64,9 @@ class ReducedProvider<S> extends StatelessWidget {
     required S initialState,
     EventListener? onEventDispatched,
     required this.child,
-  }) : store = Store(initialState, onEventDispatched);
+  }) : store = ReducedStore(initialState, onEventDispatched);
 
-  final Store<S> store;
+  final ReducedStore<S> store;
   final Widget child;
 
   @override
@@ -86,20 +86,24 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
     required this.builder,
-    required this.transformer,
+    required this.mapper,
   });
 
-  final ReducedWidgetBuilder<P> builder;
-  final ReducedTransformer<S, P> transformer;
+  final WidgetFromPropsBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
 
   @override
   Widget build(BuildContext context) => _build(context.store<S>());
 
-  Widget _build(Store<S> store) => __build(store, transformer(store));
+  Widget _build(ReducedStore<S> store) => __build(
+        store,
+        mapper(store.state, store),
+      );
 
-  Widget __build(Store<S> store, P initialValue) => StreamBuilder<P>(
+  Widget __build(ReducedStore<S> store, P initialValue) =>
+      StreamBuilder<P>(
         stream: _skipInitialValue(
-          store.stream.map((e) => transformer(store)),
+          store.stream.map((e) => mapper(store.state, store)),
           initialValue,
         ).distinct(),
         builder: AsyncSnapshotBuilder.reduced(
@@ -133,8 +137,11 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: 0.2.1
-  reduced_streambuilder: 0.2.1
+  reduced: 0.4.0
+  reduced_streambuilder: 
+    git:
+      url: https://github.com/partmaster/reduced_streambuilder.git
+      ref: v0.4.0
 ```
 
 Import package 'reduced' to implement the logic.
@@ -158,8 +165,9 @@ Implementation of the counter demo app logic with the 'reduced' API without furt
 
 import 'package:flutter/material.dart';
 import 'package:reduced/reduced.dart';
+import 'package:reduced/callbacks.dart';
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
@@ -171,10 +179,13 @@ class Props {
   final VoidCallable onPressed;
 }
 
-Props transformProps(ReducedStore<int> reducible) => Props(
-      counterText: '${reducible.state}',
-      onPressed: CallableAdapter(reducible, Incrementer()),
-    );
+class PropsMapper extends Props {
+  PropsMapper(int state, EventProcessor<int> processor)
+      : super(
+          counterText: '$state',
+          onPressed: EventCarrier(processor, CounterIncremented()),
+        );
+}
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.props});
@@ -226,8 +237,8 @@ class MyApp extends StatelessWidget {
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: const ReducedConsumer(
-            transformer: transformProps,
+          home:  ReducedConsumer(
+            mapper: PropsMapper.new,
             builder: MyHomePage.new,
           ),
         ),

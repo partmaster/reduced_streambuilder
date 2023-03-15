@@ -13,9 +13,9 @@ class ReducedProvider<S> extends StatelessWidget {
     required S initialState,
     EventListener? onEventDispatched,
     required this.child,
-  }) : store = Store(initialState, onEventDispatched);
+  }) : store = ReducedStore(initialState, onEventDispatched);
 
-  final Store<S> store;
+  final ReducedStore<S> store;
   final Widget child;
 
   @override
@@ -30,20 +30,24 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
     required this.builder,
-    required this.transformer,
+    required this.mapper,
   });
 
-  final ReducedWidgetBuilder<P> builder;
-  final ReducedTransformer<S, P> transformer;
+  final WidgetFromPropsBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
 
   @override
   Widget build(BuildContext context) => _build(context.store<S>());
 
-  Widget _build(Store<S> store) => __build(store, transformer(store));
+  Widget _build(ReducedStore<S> store) => __build(
+        store,
+        mapper(store.state, store),
+      );
 
-  Widget __build(Store<S> store, P initialValue) => StreamBuilder<P>(
+  Widget __build(ReducedStore<S> store, P initialValue) =>
+      StreamBuilder<P>(
         stream: _skipInitialValue(
-          store.stream.map((e) => transformer(store)),
+          store.stream.map((e) => mapper(store.state, store)),
           initialValue,
         ).distinct(),
         builder: AsyncSnapshotBuilder.reduced(
