@@ -43,7 +43,6 @@ class ReducedStore<S> implements Store<S> {
 }
 
 extension StoreOnBuildContext on BuildContext {
-  ReducedStore<S> store<S>() =>
-      InheritedValueWidget.of<ReducedStore<S>>(this);
+  ReducedStore<S> store<S>() => InheritedValueWidget.of<ReducedStore<S>>(this);
   Stream<S> stream<S>() => store<S>().stream;
 }

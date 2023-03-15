@@ -44,8 +44,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
         mapper(store.state, store),
       );
 
-  Widget __build(ReducedStore<S> store, P initialValue) =>
-      StreamBuilder<P>(
+  Widget __build(ReducedStore<S> store, P initialValue) => StreamBuilder<P>(
         stream: _skipInitialValue(
           store.stream.map((e) => mapper(store.state, store)),
           initialValue,
