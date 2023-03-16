@@ -1,7 +1,7 @@
 name: counter_app_with_selective_rebuild
 description: Counter demo app with selective rebuild implemented with 'reduced' API and 'reduced_setstate' implementation as an example of how to use the 'reduced' package.
 publish_to: 'none' 
-version: 0.4.0+6
+version: 0.4.1+7
 
 environment:
   sdk: '>=2.19.3 <3.0.0'
@@ -13,7 +13,7 @@ dependencies:
   reduced: 
     git:
       url: https://github.com/partmaster/reduced.git
-      ref: v0.4.1-beta.1
+      ref: v0.4.1-beta.4
   reduced_streambuilder: 
     path: ../../
 
